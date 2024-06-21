@@ -1,8 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
     buildInputs = with pkgs; [ 
-	  blender
-	  f3d
+      blender
+      f3d
 	  python311Packages.numpy 
       python311Packages.pillow 
       python311Packages.trimesh 
