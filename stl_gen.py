@@ -125,13 +125,13 @@ def main():
     image_path = config['image_path']
     url = config['url']
     output_path = config['output_path']
-    image_size_mm = config['image_size_mm']
-    extrusion_depth_mm = config['extrusion_depth_mm']
+    qr_size_mm = config['qr_size_mm']
+    qr_depth_mm = config['qr_depth_mm']
     
     if qrcode_type == 'url':
-        extrude_qr_code_from_url(url, output_path, image_size_mm, extrusion_depth_mm)
+        extrude_qr_code_from_url(url, output_path, image_size_mm, qr_depth_mm)
     elif qrcode_type == 'image':
-        extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion_depth_mm)
+        extrude_qr_code_from_image(image_path, output_path, image_size_mm, qr_depth_mm)
     else:
         print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are: url, image")
 

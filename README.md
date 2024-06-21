@@ -29,7 +29,7 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
     "image_path": "path/to/your/image.png",
     "url": "https://example.com",
     "output_path": "output.stl",
-    "image_size_mm": 50,
+    "qr_size_mm": 50,
     "extrusion_depth_mm": 10
 }
 ```
@@ -38,15 +38,22 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
 - `image_path`: Path to the input image file (used if `qrcode_type` is `image`).
 - `url`: URL to encode in the QR code (used if `qrcode_type` is `url`).
 - `output_path`: Path to save the output STL file.
-- `image_size_mm`: Size of the QR code image in millimeters.
-- `extrusion_depth_mm`: Depth of the extrusion in millimeters.
+- `qr_size_mm`: Size of the QR code image in millimeters (when look from the top)
+- `qr_depth_mm`: Depth of the extrusion in millimeters (height when look from the side)
+
+So the final stl of the qr code will have the dimensions of:
+```
+qr_size_mm x qr_size_mm x qr_depth_mm
+```
+
+You can also use the example config file, provided in the codebase, as a template
 
 ## Usage
 
 Run the script with the configuration file as an argument:
 
 ```sh
-python your_script.py --config config.json
+python stl_gen.py --config config.json
 ```
 
 ## Script Overview
