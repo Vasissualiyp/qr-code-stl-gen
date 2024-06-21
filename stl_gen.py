@@ -69,8 +69,8 @@ def extrude_qr_code(image_path, output_path, image_size_mm, extrusion_depth_mm):
     mesh.export(output_path)
 
 # Usage
-image_path = 'path/to/your/qr_code.png'
-output_path = 'path/to/output/qr_code.stl'
+image_path = 'test.png'
+output_path = 'out.stl'
 image_size_mm = 50  # Size of the image in mm
 extrusion_depth_mm = 10  # Depth of the extrusion in mm
 
