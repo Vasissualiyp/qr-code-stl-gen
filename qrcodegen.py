@@ -8,7 +8,8 @@ def generate_qr_code(url, basewidth=None, Logo_link=None):
     Parameters:
         url (str) - url that QR code should contain
         basewidth (int) - size of the image in px
-        Logo_link (str) - file path of the logo to put in the center of the QR code
+        Logo_link (str) - file path of the logo to put in 
+                          the center of the QR code
     """
     
     # taking image which user wants 
@@ -58,6 +59,8 @@ def generate_qr_code(url, basewidth=None, Logo_link=None):
     QRimg.save('./qrout.png')
      
     print('QR code generated!')
-    print(len(qr_matrix))
 
-generate_qr_code('https://www.zou-mse-utoronto-ca.net/')
+    return QRcode
+
+if __name__ == '__main__':
+    QRcode = generate_qr_code('https://www.zou-mse-utoronto-ca.net/')

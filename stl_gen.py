@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image
 import trimesh
+import qrcodegen as qrcg
 
 def load_image(image_path):
     """Load and binarize the image."""
@@ -10,13 +11,29 @@ def load_image(image_path):
     binary_image = (image_array < threshold).astype(np.uint8)
     return binary_image
 
-def find_black_squares(binary_image):
+def find_black_squares_from_image(binary_image):
     """Identify the positions of black squares."""
     n, m = binary_image.shape
     black_squares = []
     for i in range(n):
         for j in range(m):
             if binary_image[i, j] == 1:
+                black_squares.append((i, j))
+    return black_squares
+
+def load_qr_matrix(qr):
+    """Get the binary matrix from the QRCode object."""
+    qr_matrix = qr.get_matrix()
+    binary_matrix = np.array(qr_matrix).astype(np.uint8)
+    return binary_matrix
+
+def find_black_squares_from_qrmatrix(binary_matrix):
+    """Identify the positions of black squares."""
+    n, m = binary_matrix.shape
+    black_squares = []
+    for i in range(n):
+        for j in range(m):
+            if binary_matrix[i, j] == 1:
                 black_squares.append((i, j))
     return black_squares
 
@@ -67,19 +84,34 @@ def save_mesh(mesh, output_path):
     """Save the mesh to an STL file."""
     mesh.export(output_path)
 
-def extrude_qr_code(image_path, output_path, image_size_mm, extrusion_depth_mm):
+def extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion_depth_mm):
     binary_image = load_image(image_path)
-    black_squares = find_black_squares(binary_image)
+    black_squares = find_black_squares_from_image(binary_image)
     pixel_size_mm = image_size_mm / max(binary_image.shape)
     vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, extrusion_depth_mm)
     mesh = create_mesh(vertices, faces)
     save_mesh(mesh, output_path)
 
+def extrude_qr_code_from_url(url, output_path, image_size_mm, extrusion_depth_mm):
+    QRcode = qrcg.generate_qr_code(url)
+    QRmatrix = load_qr_matrix(QRcode)
+    black_squares = find_black_squares_from_qrmatrix(QRmatrix)
+    pixel_size_mm = image_size_mm / len(QRmatrix)
+    vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, extrusion_depth_mm)
+    mesh = create_mesh(vertices, faces)
+    save_mesh(mesh, output_path)
 
-# Usage
-image_path = 'test.png'
-output_path = 'out.stl'
-image_size_mm = 50  # Size of the image in mm
-extrusion_depth_mm = 10  # Depth of the extrusion in mm
+def main():
+    # Usage
+    image_path = 'qrout.png'
+    url = 'https://www.zou-mse-utoronto-ca.net/'
 
-extrude_qr_code(image_path, output_path, image_size_mm, extrusion_depth_mm)
+    output_path = 'out.stl'
+    image_size_mm = 50  # Size of the image in mm
+    extrusion_depth_mm = 10  # Depth of the extrusion in mm
+    
+    extrude_qr_code_from_url(url, output_path, image_size_mm, extrusion_depth_mm)
+    #extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion_depth_mm)
+
+if __name__ == '__main__':
+    main()
