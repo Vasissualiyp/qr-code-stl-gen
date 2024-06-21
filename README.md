@@ -1,6 +1,8 @@
 # QR Code to STL Extruder
 
-This project contains a script to generate a 3D extruded model (STL file) from a QR code. The QR code can be generated from a URL or an existing image file.
+This project provides a script to generate a 3D extruded model (STL file) from a QR code. The QR code can be created either from a URL or an existing image file. 
+
+It is highly recommended to use the built-in QR code generation feature rather than generating a QR code from an image. QR codes generated directly from the URL are significantly smaller in size (approximately 0.5 MB) compared to those generated from images (which can be as large as 1.6 GB).
 
 ## Features
 
@@ -73,3 +75,9 @@ The functions used in the script include:
 - `extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion_depth_mm)`: Generates and extrudes a QR code from an image file.
 
 Ensure that the configuration file is correctly specified and all required libraries are installed before running the script.
+
+### Contributions
+
+If you need additional features beyond URL-based QR code generation, feel free to request them or contribute by adding them yourself. Pull requests are welcome!
+
+
