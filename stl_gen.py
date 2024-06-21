@@ -95,7 +95,7 @@ def extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion
     mesh = create_mesh(vertices, faces)
     save_mesh(mesh, output_path)
 
-def extrude_qr_code_from_round(image_path, output_path, image_size_mm, extrusion_depth_mm):
+def extrude_qr_code_from_round(url, image_path, output_path, image_size_mm, extrusion_depth_mm):
     QRcode = qrcg.generate_qr_code(url, vistype = 'round', image_path = image_path)
     binary_image = load_image(image_path)
     black_squares = find_black_squares_from_image(binary_image)
@@ -141,7 +141,7 @@ def main():
     elif qrcode_type == 'image':
         extrude_qr_code_from_image(image_path, output_path, qr_size_mm, qr_depth_mm)
     elif qrcode_type == 'roundimg':
-        extrude_qr_code_from_round(image_path, output_path, qr_size_mm, qr_depth_mm)
+        extrude_qr_code_from_round(url, image_path, output_path, qr_size_mm, qr_depth_mm)
     else:
         print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are:")
         print("url, image, roundimg")

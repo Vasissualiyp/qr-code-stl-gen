@@ -38,12 +38,12 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
 
 - `qrcode_type`: Specifies the type of QR code source. Possible values are `url` `roundimg` or `image`.
 - `image_path`: Path to the input image file (used if `qrcode_type` is `image` or `roundimg`).
-- `url`: URL to encode in the QR code (used if `qrcode_type` is `url`).
+- `url`: URL to encode in the QR code (used if `qrcode_type` is `url` or `roundimg`).
 - `output_path`: Path to save the output STL file.
 - `qr_size_mm`: Size of the QR code image in millimeters (when look from the top)
 - `qr_depth_mm`: Depth of the extrusion in millimeters (height when look from the side)
 
-`roundimg` creates round QR code in stl format.
+`roundimg` creates round QR code in stl format, taken from the url.
 
 So the final stl of the qr code will have the dimensions of:
 ```
