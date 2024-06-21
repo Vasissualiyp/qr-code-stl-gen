@@ -58,6 +58,9 @@ Run the script with the configuration file as an argument:
 python stl_gen.py --config config.json
 ```
 
+If you run the code from inside of the IDE or don't pass the config flag, it would just take in
+`config.json` file by default.
+
 ## Script Overview
 
 The main script performs the following steps:
