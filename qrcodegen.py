@@ -1,12 +1,15 @@
 import qrcode
 import numpy as np
 from PIL import Image
+from qrcode.image.styledpil import StyledPilImage
+from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer, VerticalBarsDrawer
 
-def generate_qr_code(url, basewidth=None, Logo_link=None):
+def generate_qr_code(url, vistype='square', basewidth=None, Logo_link=None):
     """
     Generate QR code from the url.
     Parameters:
         url (str) - url that QR code should contain
+        vistype (str) - type of the QR code (square or round)
         basewidth (int) - size of the image in px
         Logo_link (str) - file path of the logo to put in 
                           the center of the QR code
@@ -41,9 +44,12 @@ def generate_qr_code(url, basewidth=None, Logo_link=None):
      
     # # taking color name from user
     # QRcolor = 'Black'
-     
+
     # adding color to QR code
-    QRimg = QRcode.make_image( back_color="white").convert('RGB')
+    if vistype == 'round':
+        QRimg = QRcode.make_image( back_color="white",image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer()).convert('RGB')
+    elif vistype == 'square':
+        QRimg = QRcode.make_image( back_color="white").convert('RGB')
     
     # Paste the logo in the QR code center
     if Logo_link:
@@ -63,4 +69,7 @@ def generate_qr_code(url, basewidth=None, Logo_link=None):
     return QRcode
 
 if __name__ == '__main__':
-    QRcode = generate_qr_code('https://www.zou-mse-utoronto-ca.net/')
+    url = 'https://www.zou-mse-utoronto-ca.net/'
+    vistype = 'square'
+    vistype = 'round'
+    QRcode = generate_qr_code(url, vistype = vistype)
