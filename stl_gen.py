@@ -112,8 +112,7 @@ def load_config(config_path):
 def main():
     # Setup argument parser
     parser = argparse.ArgumentParser(description='Extrude QR code to STL')
-    parser.add_argument('--config', required=True, help='Path to the config file')
-
+    parser.add_argument('--config', default='config.json', help='Path to the config file (default: default_config.json)')
     # Parse arguments
     args = parser.parse_args()
 
