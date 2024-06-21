@@ -6,6 +6,6 @@ pkgs.mkShell {
       python311Packages.numpy 
       python311Packages.pillow 
       python311Packages.trimesh 
-      python311Packages.qrcode 
-	];
+      python311Packages.qrcode 	
+    ];
 }
