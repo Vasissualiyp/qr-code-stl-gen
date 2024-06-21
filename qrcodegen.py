@@ -2,55 +2,62 @@ import qrcode
 import numpy as np
 from PIL import Image
 
-# taking image which user wants 
-# in the QR code center
-Logo_link = './test.png'
- 
-logo = Image.open(Logo_link)
- 
-# taking base width
-basewidth = 100
- 
-QRcode = qrcode.QRCode(
-    error_correction=qrcode.constants.ERROR_CORRECT_H
-)
-qr_matrix = QRcode.get_matrix()
-qr_matrix_size = len(qr_matrix)
-basewidth = qr_matrix_size
+def generate_qr_code(url, basewidth=None, Logo_link=None):
+    """
+    Generate QR code from the url.
+    Parameters:
+        url (str) - url that QR code should contain
+        basewidth (int) - size of the image in px
+        Logo_link (str) - file path of the logo to put in the center of the QR code
+    """
+    
+    # taking image which user wants 
+    # in the QR code center
+    if Logo_link:
+        logo = Image.open(Logo_link)
+     
+    QRcode = qrcode.QRCode(
+        error_correction=qrcode.constants.ERROR_CORRECT_H
+    )
+    qr_matrix = QRcode.get_matrix()
+    qr_matrix_size = len(qr_matrix)
 
-# adjust image size
-#wpercent = (basewidth/float(logo.size[0]))
-#hsize = int((float(logo.size[1])*float(wpercent)))
-hsize = basewidth
-#logo = logo.resize((basewidth, hsize), Image.ANTIALIAS)
- 
-# taking url or text
-url = 'https://www.zou-mse-utoronto-ca.net/'
- 
-# adding URL or text to QRcode
-QRcode.add_data(url)
- 
-# generating QR code
-QRcode.make()
- 
-# # taking color name from user
-# QRcolor = 'Black'
- 
-# adding color to QR code
-QRimg = QRcode.make_image( back_color="white").convert('RGB')
+    # If basewidth not defined, make it the size of the QR code
+    # Else, do as before
+    if not basewidth:
+        hsize = qr_matrix_size
+    else:
+        # adjust image size
+        wpercent = (basewidth/float(logo.size[0]))
+        hsize = int((float(logo.size[1])*float(wpercent)))
+        logo = logo.resize((basewidth, hsize), Image.ANTIALIAS)
+     
+    # adding URL or text to QRcode
+    QRcode.add_data(url)
+     
+    # generating QR code
+    QRcode.make()
+     
+    # # taking color name from user
+    # QRcolor = 'Black'
+     
+    # adding color to QR code
+    QRimg = QRcode.make_image( back_color="white").convert('RGB')
+    
+    # Paste the logo in the QR code center
+    if Logo_link:
+        logo_sizex = logo.size[0]
+        logo_sizey = logo.size[1]
+        pos = ((QRimg.size[0] - logo_sizex) // 2,
+               (QRimg.size[1] - logo_sizey) // 2)
+        
+        # Paste logo
+        QRimg.paste(logo, pos)
+    
+    # save the QR code generated
+    QRimg.save('./qrout.png')
+     
+    print('QR code generated!')
+    print(len(qr_matrix))
 
-# set size of QR code
-logo_sizex = logo.size[0]
-logo_sizey = logo.size[1]
-pos = ((QRimg.size[0] - logo_sizex) // 2,
-       (QRimg.size[1] - logo_sizey) // 2)
-
-# Paste logo
-#QRimg.paste(logo, pos)
-
-# save the QR code generated
-QRimg.save('./qrout.png')
-qr_matrix = QRcode.get_matrix()
- 
-print('QR code generated!')
-print(len(qr_matrix))
+generate_qr_code('https://www.zou-mse-utoronto-ca.net/')
