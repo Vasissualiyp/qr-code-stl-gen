@@ -1,7 +1,10 @@
+import qrcodegen as qrcg
+
 import numpy as np
 from PIL import Image
 import trimesh
-import qrcodegen as qrcg
+import argparse
+import json
 
 def load_image(image_path):
     """Load and binarize the image."""
@@ -101,17 +104,36 @@ def extrude_qr_code_from_url(url, output_path, image_size_mm, extrusion_depth_mm
     mesh = create_mesh(vertices, faces)
     save_mesh(mesh, output_path)
 
-def main():
-    # Usage
-    image_path = 'qrout.png'
-    url = 'https://www.zou-mse-utoronto-ca.net/'
+def load_config(config_path):
+    with open(config_path, 'r') as config_file:
+        config = json.load(config_file)
+    return config
 
-    output_path = 'out.stl'
-    image_size_mm = 50  # Size of the image in mm
-    extrusion_depth_mm = 10  # Depth of the extrusion in mm
+def main():
+    # Setup argument parser
+    parser = argparse.ArgumentParser(description='Extrude QR code to STL')
+    parser.add_argument('--config', required=True, help='Path to the config file')
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Load configuration
+    config = load_config(args.config)
     
-    extrude_qr_code_from_url(url, output_path, image_size_mm, extrusion_depth_mm)
-    #extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion_depth_mm)
+    # Retrieve values from config
+    qrcode_type = config['qrcode_type']
+    image_path = config['image_path']
+    url = config['url']
+    output_path = config['output_path']
+    image_size_mm = config['image_size_mm']
+    extrusion_depth_mm = config['extrusion_depth_mm']
+    
+    if qrcode_type == 'url':
+        extrude_qr_code_from_url(url, output_path, image_size_mm, extrusion_depth_mm)
+    elif qrcode_type == 'image':
+        extrude_qr_code_from_image(image_path, output_path, image_size_mm, extrusion_depth_mm)
+    else:
+        print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are: url, image")
 
 if __name__ == '__main__':
     main()

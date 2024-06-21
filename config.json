@@ -1,0 +1,8 @@
+{
+    "qrcode_type": "url",
+    "image_path": "qrout.png",
+    "url": "https://www.zou-mse-utoronto-ca.net/",
+    "output_path": "out.stl",
+    "image_size_mm": 50,
+    "extrusion_depth_mm": 10
+}
