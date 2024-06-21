@@ -4,7 +4,7 @@ from PIL import Image
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer, VerticalBarsDrawer
 
-def generate_qr_code(url, vistype='square', basewidth=None, Logo_link=None):
+def generate_qr_code(url, vistype='square', image_path='./qrout.png', basewidth=None, Logo_link=None):
     """
     Generate QR code from the url.
     Parameters:
@@ -70,6 +70,6 @@ def generate_qr_code(url, vistype='square', basewidth=None, Logo_link=None):
 
 if __name__ == '__main__':
     url = 'https://www.zou-mse-utoronto-ca.net/'
-    vistype = 'square'
+    #vistype = 'square'
     vistype = 'round'
     QRcode = generate_qr_code(url, vistype = vistype)
