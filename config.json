@@ -4,5 +4,5 @@
     "url": "https://www.zou-mse-utoronto-ca.net/",
     "output_path": "out.stl",
     "qr_size_mm": 50,
-    "extrusion_depth_mm": 10
+    "qr_depth_mm": 10
 }

@@ -32,7 +32,7 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
     "url": "https://example.com",
     "output_path": "output.stl",
     "qr_size_mm": 50,
-    "extrusion_depth_mm": 10
+    "qr_depth_mm": 10
 }
 ```
 
