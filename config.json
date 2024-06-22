@@ -5,5 +5,5 @@
     "output_path": "out.stl",
     "qr_size_mm": 50,
     "qr_depth_mm": 10,
-	"invert": true
+	"invert": false
 }

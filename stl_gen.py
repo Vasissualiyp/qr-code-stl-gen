@@ -6,6 +6,10 @@ import trimesh
 import argparse
 import json
 
+######################################################
+############### CONFIGURATION SETUP ##################
+######################################################
+
 class Config:
     def __init__(self, config_path):
         with open(config_path, 'r') as config_file:
@@ -19,6 +23,21 @@ class Config:
         self.qr_depth_mm = config.get('qr_depth_mm')
         self.invert = config.get('invert', False)
 
+def load_config(config_path):
+    with open(config_path, 'r') as config_file:
+        config = json.load(config_file)
+    return config
+
+######################################################
+############ IMAGE/MATRIX MANIPULATION ###############
+######################################################
+
+def load_qr_matrix(qr):
+    """Get the binary matrix from the QRCode object."""
+    qr_matrix = qr.get_matrix()
+    binary_matrix = np.array(qr_matrix).astype(np.uint8)
+    return binary_matrix
+
 def load_image(image_path):
     """Load and binarize the image."""
     image = Image.open(image_path).convert('L')
@@ -26,6 +45,18 @@ def load_image(image_path):
     threshold = 128
     binary_image = (image_array < threshold).astype(np.uint8)
     return binary_image
+
+def invert_binary_image(binary_image, config):
+    if config.invert:
+        #print(binary_image)
+        np.set_printoptions(threshold=np.inf)
+        print(binary_image)
+        flipped_binary_image = 1 - binary_image
+        print(flipped_binary_image)
+        #print(flipped_binary_image)
+        return flipped_binary_image
+    else:
+        return binary_image
 
 def find_black_squares_from_image(binary_image):
     """Identify the positions of black squares."""
@@ -37,21 +68,9 @@ def find_black_squares_from_image(binary_image):
                 black_squares.append((i, j))
     return black_squares
 
-def load_qr_matrix(qr):
-    """Get the binary matrix from the QRCode object."""
-    qr_matrix = qr.get_matrix()
-    binary_matrix = np.array(qr_matrix).astype(np.uint8)
-    return binary_matrix
-
-def find_black_squares_from_qrmatrix(binary_matrix):
-    """Identify the positions of black squares."""
-    n, m = binary_matrix.shape
-    black_squares = []
-    for i in range(n):
-        for j in range(m):
-            if binary_matrix[i, j] == 1:
-                black_squares.append((i, j))
-    return black_squares
+######################################################
+################ MESH MANIPULATION ###################
+######################################################
 
 def create_vertices_and_faces(black_squares, pixel_size_mm, qr_depth_mm):
     """Generate vertices and faces for the 3D extrusion."""
@@ -100,51 +119,41 @@ def save_mesh(mesh, output_path):
     """Save the mesh to an STL file."""
     mesh.export(output_path)
 
-def invert_binary_image(binary_image, config):
-    if config.invert:
-        #print(binary_image)
-        np.set_printoptions(threshold=np.inf)
-        print(binary_image)
-        flipped_binary_image = 1 - binary_image
-        print(flipped_binary_image)
-        #print(flipped_binary_image)
-        return flipped_binary_image
-    else:
-        return binary_image
-
-def extrude_qr_code_from_image(config):
-    binary_image = load_image(config.image_path)
-    binary_image = invert_binary_image(binary_image, config)
-    black_squares = find_black_squares_from_image(binary_image)
-    pixel_size_mm = config.qr_size_mm / max(binary_image.shape)
+def create_mesh_from_black_squares(black_squares, config, qrcode_array_size):
+    pixel_size_mm = config.qr_size_mm / qrcode_array_size
     vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, config.qr_depth_mm)
     mesh = create_mesh(vertices, faces)
     save_mesh(mesh, config.output_path)
+
+######################################################
+####### EXTRUSION RULES FOR DIFFERENT CASES ##########
+######################################################
+
+def extrude_qr_code_from_image(config):
+    binary_image = load_image(config.image_path)
+
+    binary_image = invert_binary_image(binary_image, config)
+    black_squares = find_black_squares_from_image(binary_image)
+
+    create_mesh_from_black_squares(black_squares, config, qrcode_array_size)
 
 def extrude_qr_code_from_round(config):
     QRcode = qrcg.generate_qr_code(config.url, vistype = 'round', image_path = config.image_path)
     binary_image = load_image(config.image_path)
+
     binary_image = invert_binary_image(binary_image, config)
     black_squares = find_black_squares_from_image(binary_image)
-    pixel_size_mm = config.qr_size_mm / max(binary_image.shape)
-    vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, config.qr_depth_mm)
-    mesh = create_mesh(vertices, faces)
-    save_mesh(mesh, config.output_path)
+
+    create_mesh_from_black_squares(black_squares, config, max(binary_image.shape))
 
 def extrude_qr_code_from_url(config):
     QRcode = qrcg.generate_qr_code(config.url)
     QRmatrix = load_qr_matrix(QRcode)
-    binary_image = invert_binary_image(QRmatrix, config)
-    black_squares = find_black_squares_from_qrmatrix(binary_image)
-    pixel_size_mm = config.qr_size_mm / len(binary_image)
-    vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, config.qr_depth_mm)
-    mesh = create_mesh(vertices, faces)
-    save_mesh(mesh, config.output_path)
 
-def load_config(config_path):
-    with open(config_path, 'r') as config_file:
-        config = json.load(config_file)
-    return config
+    binary_image = invert_binary_image(QRmatrix, config)
+    black_squares = find_black_squares_from_image(binary_image)
+    
+    create_mesh_from_black_squares(black_squares, config, len(binary_image))
 
 def choose_extrusion_model_and_generate_qrcode(config):
     if config.qrcode_type == 'url':
@@ -156,6 +165,10 @@ def choose_extrusion_model_and_generate_qrcode(config):
     else:
         print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are:")
         print("url, image, roundimg")
+
+######################################################
+######################## MAIN ########################
+######################################################
 
 def main():
     # Setup argument parser

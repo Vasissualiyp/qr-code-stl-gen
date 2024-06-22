@@ -32,7 +32,8 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
     "url": "https://example.com",
     "output_path": "output.stl",
     "qr_size_mm": 50,
-    "qr_depth_mm": 10
+    "qr_depth_mm": 10,
+    "invert": false
 }
 ```
 
@@ -42,6 +43,7 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
 - `output_path`: Path to save the output STL file.
 - `qr_size_mm`: Size of the QR code image in millimeters (when look from the top)
 - `qr_depth_mm`: Depth of the extrusion in millimeters (height when look from the side)
+- `invert`: Whether to invert the QR code (pass boolean `true` or `false`)
 
 `roundimg` creates round QR code in stl format, taken from the url.
 

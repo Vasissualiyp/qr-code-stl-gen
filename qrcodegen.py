@@ -21,7 +21,8 @@ def generate_qr_code(url, vistype='square', image_path='./qrout.png', basewidth=
         logo = Image.open(Logo_link)
      
     QRcode = qrcode.QRCode(
-        error_correction=qrcode.constants.ERROR_CORRECT_H
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        border = 0
     )
     qr_matrix = QRcode.get_matrix()
     qr_matrix_size = len(qr_matrix)
