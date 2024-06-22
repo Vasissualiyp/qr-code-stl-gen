@@ -100,9 +100,21 @@ def save_mesh(mesh, output_path):
     """Save the mesh to an STL file."""
     mesh.export(output_path)
 
-def extrude_qr_code_from_image(config):
+def invert_binary_image(binary_image, config):
+    if config.invert:
+        #print(binary_image)
+        np.set_printoptions(threshold=np.inf)
+        print(binary_image)
+        flipped_binary_image = 1 - binary_image
+        print(flipped_binary_image)
+        #print(flipped_binary_image)
+        return flipped_binary_image
+    else:
+        return binary_image
 
+def extrude_qr_code_from_image(config):
     binary_image = load_image(config.image_path)
+    binary_image = invert_binary_image(binary_image, config)
     black_squares = find_black_squares_from_image(binary_image)
     pixel_size_mm = config.qr_size_mm / max(binary_image.shape)
     vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, config.qr_depth_mm)
@@ -112,6 +124,7 @@ def extrude_qr_code_from_image(config):
 def extrude_qr_code_from_round(config):
     QRcode = qrcg.generate_qr_code(config.url, vistype = 'round', image_path = config.image_path)
     binary_image = load_image(config.image_path)
+    binary_image = invert_binary_image(binary_image, config)
     black_squares = find_black_squares_from_image(binary_image)
     pixel_size_mm = config.qr_size_mm / max(binary_image.shape)
     vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, config.qr_depth_mm)
@@ -121,8 +134,9 @@ def extrude_qr_code_from_round(config):
 def extrude_qr_code_from_url(config):
     QRcode = qrcg.generate_qr_code(config.url)
     QRmatrix = load_qr_matrix(QRcode)
-    black_squares = find_black_squares_from_qrmatrix(QRmatrix)
-    pixel_size_mm = config.qr_size_mm / len(QRmatrix)
+    binary_image = invert_binary_image(QRmatrix, config)
+    black_squares = find_black_squares_from_qrmatrix(binary_image)
+    pixel_size_mm = config.qr_size_mm / len(binary_image)
     vertices, faces = create_vertices_and_faces(black_squares, pixel_size_mm, config.qr_depth_mm)
     mesh = create_mesh(vertices, faces)
     save_mesh(mesh, config.output_path)
@@ -131,6 +145,17 @@ def load_config(config_path):
     with open(config_path, 'r') as config_file:
         config = json.load(config_file)
     return config
+
+def choose_extrusion_model_and_generate_qrcode(config):
+    if config.qrcode_type == 'url':
+        extrude_qr_code_from_url(config)
+    elif config.qrcode_type == 'image':
+        extrude_qr_code_from_image(config)
+    elif config.qrcode_type == 'roundimg':
+        extrude_qr_code_from_round(config)
+    else:
+        print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are:")
+        print("url, image, roundimg")
 
 def main():
     # Setup argument parser
@@ -144,16 +169,8 @@ def main():
     
     # Retrieve values from config
     config = Config(args.config)
-    
-    if config.qrcode_type == 'url':
-        extrude_qr_code_from_url(config)
-    elif config.qrcode_type == 'image':
-        extrude_qr_code_from_image(config)
-    elif config.qrcode_type == 'roundimg':
-        extrude_qr_code_from_round(config)
-    else:
-        print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are:")
-        print("url, image, roundimg")
 
+    choose_extrusion_model_and_generate_qrcode(config)
+    
 if __name__ == '__main__':
     main()

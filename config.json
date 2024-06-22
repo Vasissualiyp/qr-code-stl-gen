@@ -1,8 +1,9 @@
 {
-    "qrcode_type": "url",
+    "qrcode_type": "roundimg",
     "image_path": "qrout.png",
     "url": "https://www.zou-mse-utoronto-ca.net/",
     "output_path": "out.stl",
     "qr_size_mm": 50,
-    "qr_depth_mm": 10
+    "qr_depth_mm": 10,
+	"invert": true
 }
