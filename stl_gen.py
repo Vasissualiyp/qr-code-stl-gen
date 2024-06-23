@@ -135,7 +135,7 @@ def extrude_qr_code_from_image(config):
     binary_image = invert_binary_image(binary_image, config)
     black_squares = find_black_squares_from_image(binary_image)
 
-    create_mesh_from_black_squares(black_squares, config, qrcode_array_size)
+    create_mesh_from_black_squares(black_squares, config, max(binary_image.shape))
 
 def extrude_qr_code_from_round(config):
     QRcode = qrcg.generate_qr_code(config.url, vistype = 'round', image_path = config.image_path)

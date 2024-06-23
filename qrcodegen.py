@@ -9,7 +9,7 @@ def generate_qr_code(url, vistype='square', image_path='./qrout.png', basewidth=
     Generate QR code from the url.
     Parameters:
         url (str) - url that QR code should contain
-        vistype (str) - type of the QR code (square or round)
+        vistype (str) - type of the QR code (square, line or round)
         basewidth (int) - size of the image in px
         Logo_link (str) - file path of the logo to put in 
                           the center of the QR code
@@ -50,7 +50,7 @@ def generate_qr_code(url, vistype='square', image_path='./qrout.png', basewidth=
     if vistype == 'round':
         QRimg = QRcode.make_image( back_color="white",image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer()).convert('RGB')
     elif vistype == 'line':
-        QRimg = QRcode.make_image( back_color="white",image_factory=VerticalBarsDrawer, module_drawer=RoundedModuleDrawer()).convert('RGB')
+        QRimg = QRcode.make_image( back_color="white",image_factory=StyledPilImage, module_drawer=VerticalBarsDrawer()).convert('RGB')
     elif vistype == 'square':
         QRimg = QRcode.make_image( back_color="white").convert('RGB')
     
