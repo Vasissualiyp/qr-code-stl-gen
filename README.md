@@ -45,14 +45,22 @@ The script uses a JSON configuration file to specify the parameters. Create a `c
 - `qr_depth_mm`: Depth of the extrusion in millimeters (height when look from the side)
 - `invert`: Whether to invert the QR code (pass boolean `true` or `false`)
 
-`roundimg` creates round QR code in stl format, taken from the url.
-
 So the final stl of the qr code will have the dimensions of:
 ```
 qr_size_mm x qr_size_mm x qr_depth_mm
 ```
 
 You can also use the example config file, provided in the codebase, as a template.
+
+### QR Code types
+
+Currently, the following values of `qrcode_type` are supported:
+- `url`: creates square QR code in stl format, taken from the url. 
+**This QR code type would be the most space-efficient compared to the options below**
+- `image`: creates square QR code in stl format, taken from the image.
+- `roundimg`: creates round QR code in stl format, taken from the url.
+- `lineimg`: creates bar-type QR code in stl format, taken from the url.
+
 
 ## Usage
 

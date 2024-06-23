@@ -49,6 +49,8 @@ def generate_qr_code(url, vistype='square', image_path='./qrout.png', basewidth=
     # adding color to QR code
     if vistype == 'round':
         QRimg = QRcode.make_image( back_color="white",image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer()).convert('RGB')
+    elif vistype == 'line':
+        QRimg = QRcode.make_image( back_color="white",image_factory=VerticalBarsDrawer, module_drawer=RoundedModuleDrawer()).convert('RGB')
     elif vistype == 'square':
         QRimg = QRcode.make_image( back_color="white").convert('RGB')
     

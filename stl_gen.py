@@ -146,6 +146,15 @@ def extrude_qr_code_from_round(config):
 
     create_mesh_from_black_squares(black_squares, config, max(binary_image.shape))
 
+def extrude_qr_code_from_line(config):
+    QRcode = qrcg.generate_qr_code(config.url, vistype = 'line', image_path = config.image_path)
+    binary_image = load_image(config.image_path)
+
+    binary_image = invert_binary_image(binary_image, config)
+    black_squares = find_black_squares_from_image(binary_image)
+
+    create_mesh_from_black_squares(black_squares, config, max(binary_image.shape))
+
 def extrude_qr_code_from_url(config):
     QRcode = qrcg.generate_qr_code(config.url)
     QRmatrix = load_qr_matrix(QRcode)
@@ -162,6 +171,8 @@ def choose_extrusion_model_and_generate_qrcode(config):
         extrude_qr_code_from_image(config)
     elif config.qrcode_type == 'roundimg':
         extrude_qr_code_from_round(config)
+    elif config.qrcode_type == 'lineimg':
+        extrude_qr_code_from_line(config)
     else:
         print("Invalid type of qrcode. So far, the only available 'qrcode_type' values are:")
         print("url, image, roundimg")
